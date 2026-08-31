@@ -3,7 +3,19 @@ import os
 import pandas as pd
 import yfinance as yf
 
-TICKERS = ["XLK", "XLY", "XLI", "XLF", "XLE"]
+SECTOR_TICKERS = {
+    "XLK": ["NVDA", "AAPL", "MSFT", "AVGO", "AMD", "MU", "INTC", "CSCO", "AMAT",
+            "LRCX", "TXN", "KLAC", "ORCL", "IBM", "APH", "MRVL", "ADI", "STX", "QCOM", "CRM"],
+    "XLY": ["AMZN", "HD", "MCD", "BKNG", "TJX", "SBUX", "LOW", "ROST", "MAR", "RCL",
+            "ORLY", "F", "GRMN", "AZO", "NKE", "EBAY", "CMG", "YUM", "DHI"],
+    "XLI": ["CAT", "GE", "RTX", "BA", "UNP", "ETN", "DE", "PH", "LMT", "ADP", "TT",
+            "PWR", "GD", "MMM", "CSX", "JCI", "EMR", "CMI", "WM", "UPS", "NOC"],
+    "XLF": ["JPM", "BRK-B", "V", "MA", "BAC", "GS", "WFC", "MS", "C", "AXP", "SCHW",
+            "BLK", "COF", "SPGI", "CB", "PGR", "BNY", "BX", "PNC", "USB", "CME", "ICE", "TRV"],
+    "XLE": ["XOM", "CVX", "COP", "VLO", "SLB", "EOG", "WMB", "BKR", "OKE", "DVN",
+            "OXY", "EQT", "HAL", "TPL", "APA"],
+}
+TICKERS = [ticker for tickers in SECTOR_TICKERS.values() for ticker in tickers]
 START_DATE = "2010-01-01"
 END_DATE = "2026-01-01"
 
