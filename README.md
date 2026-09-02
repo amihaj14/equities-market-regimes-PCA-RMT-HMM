@@ -1,7 +1,6 @@
 # Equities Market Regimes: PCA + RMT + HMM
 
-Can you tell the difference between real market structure and pure statistical noise
-— and does removing the noise actually help you detect market regimes better? This
+Can you tell the difference between real market structure and pure statistical noise, and does removing the noise actually help you detect market regimes better? This
 project is an empirical test of that question, not just a regime-detection tool.
 
 ## The idea
