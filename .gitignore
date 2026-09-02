@@ -181,3 +181,5 @@ cython_debug/
 .cursorindexingignore
 
 av_price_cache.csv
+Notes/
+CLAUDE.md
