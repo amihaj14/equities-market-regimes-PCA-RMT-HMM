@@ -4,7 +4,7 @@ matplotlib.use("Agg")
 import numpy as np
 import matplotlib.pyplot as plt
 
-from filtering.RMT.rmt import mp_pdf
+from filtering.RMT.mp import mp_pdf
 
 
 def plot_mp_fit(
