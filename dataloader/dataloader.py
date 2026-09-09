@@ -21,6 +21,9 @@ END_DATE = "2026-01-01"
 
 CACHE_PATH = "av_price_cache.csv"
 
+VIX_TICKER = "^VIX"
+VIX_CACHE_PATH = "vix_cache.csv"
+
 
 def download_and_cache(tickers=TICKERS, cache_path=CACHE_PATH) -> pd.DataFrame:
     print(f"Downloading full daily history for {len(tickers)} tickers from Yahoo Finance...")
@@ -65,6 +68,27 @@ def load_returns(
         returns = (returns - returns.mean()) / returns.std()
 
     return returns, prices
+
+
+def download_and_cache_vix(cache_path=VIX_CACHE_PATH) -> pd.DataFrame:
+    print("Downloading VIX history from Yahoo Finance...")
+    data = yf.download([VIX_TICKER], period="max", auto_adjust=True, progress=False)
+    vix = data["Close"][[VIX_TICKER]]
+    vix.to_csv(cache_path)
+    print(f"Cached VIX to {cache_path}")
+    return vix
+
+
+def load_vix(start_date=START_DATE, end_date=END_DATE, cache_path=VIX_CACHE_PATH, force_refresh=False) -> pd.Series:
+    if os.path.exists(cache_path) and not force_refresh:
+        print(f"Loading cached VIX from {cache_path}...")
+        vix = pd.read_csv(cache_path, index_col=0, parse_dates=True)
+    else:
+        vix = download_and_cache_vix(cache_path)
+
+    vix = vix.loc[start_date:end_date, VIX_TICKER]
+    vix = vix.ffill()
+    return vix
 
 
 if __name__ == "__main__":

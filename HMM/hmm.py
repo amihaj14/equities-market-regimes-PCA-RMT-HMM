@@ -38,21 +38,41 @@ def select_n_states(factors, candidates=(2,3,4)):
     best_n_states = min(bic_scores, key=bic_scores.get)
     return models[best_n_states], best_n_states, bic_scores
 
+def volatility_rank(model):
+    n_states = model.n_components
+    volatilities = np.array([np.trace(model.covars_[state]) for state in range(n_states)])
+    vol_rank = np.argsort(volatilities)
+    state_to_rank = {state: rank for rank, state in enumerate(vol_rank)}
+    return state_to_rank
+
+
+def rank_labels(n_states):
+    if n_states == 3:
+        return {0: "Bull", 1: "Neutral", 2: "Bear"}
+    return {rank: f"State_{rank}_of_{n_states}" for rank in range(n_states)}
+
+
 def decode_regimes(model, factors):
     state_sequence = model.predict(factors.values)
     n_states = model.n_components
 
-    volatilities = np.array([np.trace(model.covars_[state])for state in range(n_states)])
-    vol_rank = np.argsort(volatilities)
-    state_to_rank = {state: rank for rank, state in enumerate(vol_rank)}
-
-    if n_states == 3:
-        rank_to_label = {0: "Bull", 1: "Neutral", 2: "Bear"}
-    else:
-        rank_to_label = {rank: f"State_{rank}_of_{n_states}" for rank in range(n_states)}
+    state_to_rank = volatility_rank(model)
+    rank_to_label = rank_labels(n_states)
 
     labels = [rank_to_label[state_to_rank[state]]for state in state_sequence]
     return pd.Series(labels, index=factors.index, name="regime")
+
+
+def labeled_transmat(model):
+    n_states = model.n_components
+    state_to_rank = volatility_rank(model)
+    rank_to_label = rank_labels(n_states)
+
+    order = sorted(range(n_states), key=lambda state: state_to_rank[state])
+    labels = [rank_to_label[state_to_rank[state]] for state in order]
+
+    reordered = model.transmat_[np.ix_(order, order)]
+    return pd.DataFrame(reordered, index=labels, columns=labels)
 
 
 
